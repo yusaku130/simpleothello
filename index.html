@@ -8,9 +8,9 @@
 :root{--bg:#083b25;--panel:#ffffff16;--line:#ffffff25;--cell:#188b50;--board:#116d3e;--txt:#fff;--muted:#d9eee2;--accent:#ffd166;--danger:#ef476f}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(circle at top,#126a3e,#062b1b);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Meiryo",sans-serif}.wrap{width:min(1100px,100%);margin:auto;padding:16px}h1{text-align:center;margin:0 0 4px;font-size:28px}.sub{text-align:center;color:var(--muted);font-size:13px;margin:0 0 14px}.layout{display:grid;grid-template-columns:310px 1fr;gap:14px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;backdrop-filter:blur(5px);box-shadow:0 12px 26px #0003}.settings{display:grid;gap:10px}.label{font-size:12px;color:var(--muted);margin-bottom:4px}select,button{width:100%;border:0;border-radius:11px;padding:11px;font-size:15px;font-weight:700}select{background:#fff;color:#123}button{cursor:pointer}.primary{background:var(--accent);color:#222}.secondary{background:#eaf7ef;color:#173625}.danger{background:var(--danger);color:#fff}.controls{display:grid;gap:8px;margin-top:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat,.info{background:#0002;border:1px solid #ffffff18;border-radius:12px;padding:9px}.stat b,.info b{display:block;font-size:20px}.message{margin-top:12px;min-height:58px;padding:11px;background:#0002;border-radius:12px;line-height:1.5}.help{font-size:12px;line-height:1.6;color:var(--muted);margin-top:10px}.game{display:grid;gap:12px}.topInfo{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.boardWrap{display:flex;justify-content:center}.board{width:min(100%,548px);display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;padding:9px;background:linear-gradient(#178049,var(--board));border:1px solid var(--line);border-radius:16px}.cell{position:relative;aspect-ratio:1;width:100%;min-width:0;padding:0;border:1px solid #0003;border-radius:9px;background:linear-gradient(#1b9858,var(--cell));box-shadow:none}.cell.hint{outline:3px solid #fff;outline-offset:-3px}.cell.last{box-shadow:inset 0 0 0 4px #ff8c00}.stone{position:absolute;inset:7px;border-radius:50%;border:1px solid #0005;box-shadow:inset 0 4px 7px #fff4,0 3px 7px #0005}.black{background:radial-gradient(circle at 35% 30%,#666,#111 38%,#000)}.white{background:radial-gradient(circle at 35% 30%,#fff,#f5f5f5 48%,#d7d7d7)}.log{max-height:160px;overflow:auto;background:#0002;border-radius:12px;padding:10px;font:12px/1.5 ui-monospace,monospace;white-space:pre-wrap}@media(max-width:850px){.layout{grid-template-columns:1fr}.topInfo{grid-template-columns:repeat(3,1fr)}}@media(max-width:520px){.wrap{padding:7px}h1{font-size:23px}.sub{font-size:11px;margin-bottom:8px}.panel{padding:9px;border-radius:13px}.layout,.game{gap:8px}.topInfo{grid-template-columns:repeat(2,1fr);gap:6px}.board{gap:2px;padding:5px;border-radius:11px}.cell{border-radius:6px}.stone{inset:4px}.cell.hint{outline-width:2px;outline-offset:-2px}.cell.last{box-shadow:inset 0 0 0 3px #ff8c00}.info b{font-size:17px}}
 </style>
 </head>
-<body><main class="wrap"><h1>Simple Othello</h1><p class="sub">スマホ対応・1人/2人対戦</p><div class="layout"><section class="panel"><div class="settings"><div><div class="label">モード</div><select id="mode"><option value="cpu">一人で遊ぶ（vs CPU）</option><option value="two">二人で遊ぶ</option></select></div><div><div class="label">あなたの色</div><select id="color"><option value="1">黒</option><option value="-1">白</option></select></div><div><div class="label">CPUの強さ</div><select id="diff"><option value="easy">弱</option><option value="normal" selected>中</option><option value="hard">強</option><option value="ultimate">最強</option></select></div></div><div class="stats"><div class="stat"><span class="label">黒</span><b id="bc">2</b></div><div class="stat"><span class="label">白</span><b id="wc">2</b></div><div class="stat"><span class="label">状態</span><b id="status">-</b></div></div><div class="message" id="msg">設定を選んで「新しいゲーム」を押してください。</div><div class="controls"><button class="primary" id="new">新しいゲーム</button><button class="secondary" id="hint">ヒント表示: ON</button><button class="danger" id="pass">パス</button></div><div class="help">置ける場所は白枠、CPUの直前手はオレンジ枠で表示します。</div></section><section class="panel game"><div class="topInfo"><div class="info"><span class="label">現在の番</span><b id="turn">-</b></div><div class="info"><span class="label">モード</span><b id="modeText">vs CPU</b></div><div class="info"><span class="label">あなた</span><b id="you">黒</b></div><div class="info"><span class="label">強さ</span><b id="diffText">中</b></div><div class="info"><span class="label">置ける場所</span><b id="moves">0</b></div></div><div class="boardWrap"><div class="board" id="board"></div></div><div class="log" id="log"></div></section></div></main>
+<body><main class="wrap"><h1>Simple Othello</h1><p class="sub">スマホ対応・1人/2人対戦</p><div class="layout"><section class="panel"><div class="settings"><div><div class="label">モード</div><select id="mode"><option value="cpu">一人で遊ぶ（vs CPU）</option><option value="two">二人で遊ぶ</option></select></div><div><div class="label">あなたの色</div><select id="color"><option value="1">黒</option><option value="-1">白</option></select></div><div><div class="label">CPUの強さ</div><select id="diff"><option value="easy">弱</option><option value="normal" selected>中</option><option value="hard">強</option><option value="expert">上級</option><option value="master">名人</option><option value="ultimate">最強</option><option value="oni">鬼</option></select></div></div><div class="stats"><div class="stat"><span class="label">黒</span><b id="bc">2</b></div><div class="stat"><span class="label">白</span><b id="wc">2</b></div><div class="stat"><span class="label">状態</span><b id="status">-</b></div></div><div class="message" id="msg">設定を選んで「新しいゲーム」を押してください。</div><div class="controls"><button class="primary" id="new">新しいゲーム</button><button class="secondary" id="hint">ヒント表示: ON</button><button class="danger" id="pass">パス</button></div><div class="help">置ける場所は白枠、CPUの直前手はオレンジ枠です。最強・鬼は先読みするため、少し考えることがあります。</div></section><section class="panel game"><div class="topInfo"><div class="info"><span class="label">現在の番</span><b id="turn">-</b></div><div class="info"><span class="label">モード</span><b id="modeText">vs CPU</b></div><div class="info"><span class="label">あなた</span><b id="you">黒</b></div><div class="info"><span class="label">強さ</span><b id="diffText">中</b></div><div class="info"><span class="label">置ける場所</span><b id="moves">0</b></div></div><div class="boardWrap"><div class="board" id="board"></div></div><div class="log" id="log"></div></section></div></main>
 <script>
-const N=8,E=0,B=1,W=-1,D=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]],DL={easy:'弱',normal:'中',hard:'強',ultimate:'最強'};
+const N=8,E=0,B=1,W=-1,D=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]],DL={easy:'弱',normal:'中',hard:'強',expert:'上級',master:'名人',ultimate:'最強',oni:'鬼'};
 const $=id=>document.getElementById(id),el={board:$('board'),mode:$('mode'),color:$('color'),diff:$('diff'),bc:$('bc'),wc:$('wc'),status:$('status'),msg:$('msg'),turn:$('turn'),modeText:$('modeText'),you:$('you'),diffText:$('diffText'),moves:$('moves'),log:$('log'),hint:$('hint')};
 let s={b:[],turn:B,player:B,cpu:W,on:false,mode:'cpu',diff:'normal',hints:true,last:null,logs:[]};
 const name=c=>c===B?'黒':'白',inside=(r,c)=>r>=0&&c>=0&&r<N&&c<N;
@@ -27,7 +27,94 @@ function newGame(){readSettings();init();s.turn=B;s.on=true;s.last=null;s.logs=[
 function move(r,c){if(!canHuman())return;let f=flips(s.b,r,c,s.turn);if(!f.length)return;let who=s.mode==='two'?name(s.turn):'あなた';s.b=put(s.b,r,c,s.turn);addLog(`${who}: ${'ABCDEFGH'[c]}${r+1} / ${f.length}枚返し`);s.turn=-s.turn;render();s.mode==='two'?advanceTwo():(s.turn=s.cpu,render(),setTimeout(cpuTurn,220))}
 function advanceTwo(){if(!legal(s.b,B).length&&!legal(s.b,W).length)return end();if(legal(s.b,s.turn).length){el.msg.textContent=name(s.turn)+'の番です。';render()}else{addLog(name(s.turn)+': パス');s.turn=-s.turn;advanceTwo()}}
 const corner=(r,c)=>(r===0||r===7)&&(c===0||c===7),edge=(r,c)=>r===0||r===7||c===0||c===7,xsq=(r,c)=>(r===1||r===6)&&(c===1||c===6),csq=(r,c)=>(r===0||r===7)&&(c===1||c===6)||(c===0||c===7)&&(r===1||r===6);
-function cpuPick(){let ms=legal(s.b,s.cpu);if(!ms.length)return null;if(s.diff==='easy')return ms[Math.floor(Math.random()*ms.length)];let best=null,bs=-1e9;for(const m of ms){let sc=m.f.length;if(s.diff!=='normal'){if(corner(m.r,m.c))sc+=10000;if(edge(m.r,m.c))sc+=60;if(xsq(m.r,m.c))sc-=900;if(csq(m.r,m.c))sc-=350;let n=put(s.b,m.r,m.c,s.cpu);sc-=legal(n,s.player).length*8;if(s.diff==='ultimate'&&legal(n,s.player).some(z=>corner(z.r,z.c)))sc-=6000}if(sc>bs){bs=sc;best=m}}return best}
+const PW=[
+[120,-35,20,5,5,20,-35,120],
+[-35,-55,-5,-5,-5,-5,-55,-35],
+[20,-5,15,3,3,15,-5,20],
+[5,-5,3,3,3,3,-5,5],
+[5,-5,3,3,3,3,-5,5],
+[20,-5,15,3,3,15,-5,20],
+[-35,-55,-5,-5,-5,-5,-55,-35],
+[120,-35,20,5,5,20,-35,120]
+];
+let searchDeadline=0,searchTimedOut=false;
+function emptyCount(board){let n=0;for(const row of board)for(const v of row)if(v===E)n++;return n}
+function discDiff(board,col){let n=0;for(const row of board)for(const v of row)n+=v===col?1:v===-col?-1:0;return n}
+function terminalScore(board,col){let d=discDiff(board,col);return d===0?0:(d>0?100000:-100000)+d*100}
+function evaluate(board,col){
+ let empties=emptyCount(board),mine=legal(board,col).length,theirs=legal(board,-col).length;
+ if(!mine&&!theirs)return terminalScore(board,col);
+ let pos=0,frontMine=0,frontTheirs=0,cMine=0,cTheirs=0;
+ for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+  let v=board[r][c];if(!v)continue;
+  pos+=(v===col?1:-1)*PW[r][c];
+  if(corner(r,c)){if(v===col)cMine++;else cTheirs++}
+  let frontier=false;
+  for(const[dr,dc]of D)if(inside(r+dr,c+dc)&&board[r+dr][c+dc]===E){frontier=true;break}
+  if(frontier){if(v===col)frontMine++;else frontTheirs++}
+ }
+ let d=discDiff(board,col),discWeight=empties<14?14:empties<28?3:-1;
+ return pos*4+(mine-theirs)*16+(cMine-cTheirs)*180+(frontTheirs-frontMine)*7+d*discWeight;
+}
+function orderedMoves(board,col){
+ return legal(board,col).sort((a,b)=>(PW[b.r][b.c]+b.f.length*2)-(PW[a.r][a.c]+a.f.length*2));
+}
+function minimax(board,turn,depth,alpha,beta,root){
+ if(performance.now()>searchDeadline){searchTimedOut=true;return evaluate(board,root)}
+ let ms=orderedMoves(board,turn),other=legal(board,-turn);
+ if(!ms.length&&!other.length)return terminalScore(board,root);
+ if(depth<=0)return evaluate(board,root);
+ if(!ms.length)return minimax(board,-turn,depth-1,alpha,beta,root);
+ if(turn===root){
+  let best=-Infinity;
+  for(const m of ms){best=Math.max(best,minimax(put(board,m.r,m.c,turn),-turn,depth-1,alpha,beta,root));alpha=Math.max(alpha,best);if(beta<=alpha||searchTimedOut)break}
+  return best;
+ }
+ let best=Infinity;
+ for(const m of ms){best=Math.min(best,minimax(put(board,m.r,m.c,turn),-turn,depth-1,alpha,beta,root));beta=Math.min(beta,best);if(beta<=alpha||searchTimedOut)break}
+ return best;
+}
+function searchPick(board,col,maxDepth,timeMs,exactAt){
+ let ms=orderedMoves(board,col),best=ms[0],empties=emptyCount(board);
+ let target=empties<=exactAt?empties+2:maxDepth;
+ searchDeadline=performance.now()+timeMs;
+ for(let depth=1;depth<=target;depth++){
+  searchTimedOut=false;let roundBest=best,roundScore=-Infinity;
+  for(const m of ms){
+   let score=minimax(put(board,m.r,m.c,col),-col,depth-1,-Infinity,Infinity,col);
+   if(searchTimedOut)break;
+   if(score>roundScore){roundScore=score;roundBest=m}
+  }
+  if(searchTimedOut)break;
+  best=roundBest;
+ }
+ return best;
+}
+function quickScore(board,m,col,full){
+ let n=put(board,m.r,m.c,col),sc=m.f.length*5+PW[m.r][m.c]*3;
+ if(full)sc=evaluate(n,col);
+ if(legal(n,-col).some(z=>corner(z.r,z.c)))sc-=2500;
+ return sc;
+}
+function chooseNearBest(ms,scored){
+ let sorted=scored.slice().sort((a,b)=>b.sc-a.sc),pool=sorted.slice(0,Math.min(3,sorted.length));
+ if(Math.random()<.7)return pool[0].m;
+ return pool[Math.floor(Math.random()*pool.length)].m;
+}
+function cpuPick(){
+ let ms=legal(s.b,s.cpu);if(!ms.length)return null;
+ if(s.diff==='easy'){
+  let cs=ms.filter(m=>corner(m.r,m.c));
+  if(cs.length&&Math.random()<.55)return cs[Math.floor(Math.random()*cs.length)];
+  return ms[Math.floor(Math.random()*ms.length)];
+ }
+ if(s.diff==='normal')return chooseNearBest(ms,ms.map(m=>({m,sc:quickScore(s.b,m,s.cpu,false)})));
+ if(s.diff==='hard')return ms.map(m=>({m,sc:quickScore(s.b,m,s.cpu,true)})).sort((a,b)=>b.sc-a.sc)[0].m;
+ if(s.diff==='expert')return searchPick(s.b,s.cpu,2,180,6);
+ if(s.diff==='master')return searchPick(s.b,s.cpu,3,320,8);
+ if(s.diff==='ultimate')return searchPick(s.b,s.cpu,5,700,10);
+ return searchPick(s.b,s.cpu,8,1400,14);
+}
 function cpuTurn(){if(!s.on||s.mode!=='cpu')return;if(!legal(s.b,B).length&&!legal(s.b,W).length)return end();let ms=legal(s.b,s.cpu);if(!ms.length){s.turn=s.player;el.msg.textContent='CPUはパス。あなたの番です。';return render()}let m=cpuPick();s.b=put(s.b,m.r,m.c,s.cpu);s.last={r:m.r,c:m.c};addLog(`CPU: ${'ABCDEFGH'[m.c]}${m.r+1} / ${m.f.length}枚返し`);s.turn=s.player;render();if(legal(s.b,s.player).length){el.msg.textContent='あなたの番です。';return}addLog('あなた: パス');s.turn=s.cpu;el.msg.textContent='あなたは置ける場所がないためパス。';render();setTimeout(cpuTurn,250)}
 function end(){s.on=false;let{b,w}=count();let t=b===w?'引き分け':b>w?'黒の勝ち':'白の勝ち';el.msg.textContent=`終了：${t}（黒 ${b} / 白 ${w}）`;addLog('--- '+t+' ---');render(true)}
 function pass(){if(!s.on)return;if(legal(s.b,s.turn).length){el.msg.textContent='まだ置ける場所があります。';return}if(s.mode==='two'){addLog(name(s.turn)+': パス');s.turn=-s.turn;advanceTwo()}else if(s.turn===s.player){addLog('あなた: パス');s.turn=s.cpu;render();setTimeout(cpuTurn,200)}}
