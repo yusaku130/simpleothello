@@ -5,72 +5,833 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Simple Othello</title>
 <style>
-:root{--bg:#083b25;--panel:#ffffff16;--line:#ffffff25;--cell:#188b50;--board:#116d3e;--txt:#fff;--muted:#d9eee2;--accent:#ffd166;--danger:#ef476f;--good:#8ce99a;--warn:#ffd43b;--analysis:#071f16e8}*{box-sizing:border-box}html,body,.wrap,button,select,.board,.cell{touch-action:manipulation}.wrap{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.cell{-webkit-tap-highlight-color:transparent}body{margin:0;min-height:100dvh;background:radial-gradient(circle at top,#126a3e,#062b1b);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Meiryo",sans-serif}.wrap{width:min(1100px,100%);margin:auto;padding:16px}h1{text-align:center;margin:0 0 4px;font-size:28px}.sub{text-align:center;color:var(--muted);font-size:13px;margin:0 0 14px}.layout{display:grid;grid-template-columns:310px 1fr;gap:14px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;backdrop-filter:blur(5px);box-shadow:0 12px 26px #0003}.settings{display:grid;gap:10px}.label{font-size:12px;color:var(--muted);margin-bottom:4px}select,button{width:100%;border:0;border-radius:11px;padding:11px;font-size:15px;font-weight:700}select{background:#fff;color:#123}button{cursor:pointer}.primary{background:var(--accent);color:#222}.secondary{background:#eaf7ef;color:#173625}.danger{background:var(--danger);color:#fff}.controls{display:grid;gap:8px;margin-top:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat,.info{background:#0002;border:1px solid #ffffff18;border-radius:12px;padding:9px}.stat b,.info b{display:block;font-size:20px}.message{margin-top:12px;min-height:58px;padding:11px;background:#0002;border-radius:12px;line-height:1.5}.help{font-size:12px;line-height:1.6;color:var(--muted);margin-top:10px}.game{display:grid;gap:12px}.topInfo{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.boardWrap{display:flex;justify-content:center}.board{width:min(100%,548px);display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;padding:9px;background:linear-gradient(#178049,var(--board));border:1px solid var(--line);border-radius:16px}.cell{position:relative;aspect-ratio:1;width:100%;min-width:0;padding:0;border:1px solid #0003;border-radius:9px;background:linear-gradient(#1b9858,var(--cell));box-shadow:none}.cell.hint{outline:3px solid #fff;outline-offset:-3px}.cell.last{box-shadow:inset 0 0 0 4px #ff8c00}.stone{position:absolute;inset:7px;border-radius:50%;border:1px solid #0005;box-shadow:inset 0 4px 7px #fff4,0 3px 7px #0005}.black{background:radial-gradient(circle at 35% 30%,#666,#111 38%,#000)}.white{background:radial-gradient(circle at 35% 30%,#fff,#f5f5f5 48%,#d7d7d7)}.log{max-height:160px;overflow:auto;background:#0002;border-radius:12px;padding:10px;font:12px/1.5 ui-monospace,monospace;white-space:pre-wrap}.analysisCard{display:none;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;background:#001b12a8;border:1px solid #ffffff1f;border-radius:13px}.analysisCard.show{display:grid}.analysisScore{min-width:58px;text-align:center;border-radius:12px;padding:7px 6px;background:#fff;color:#173625;font-size:22px;font-weight:900;line-height:1}.analysisScore small{display:block;font-size:10px;font-weight:700;margin-top:4px;color:#456}.analysisText{min-width:0;line-height:1.4}.analysisText b{display:block;font-size:14px}.analysisText span{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.analysisText .goodShort{color:#c9f7d0}.analysisText .badShort{color:#ffe3a3}.analysisCard button{width:auto;min-width:82px;padding:9px 11px;font-size:13px}.analysisBusy{font-size:12px;color:var(--muted)}.analysisModal{position:fixed;inset:0;display:none;z-index:50;background:#000a;padding:16px;overflow:auto;align-items:center;justify-content:center}.analysisModal.show{display:flex}.analysisDialog{width:min(720px,100%);background:linear-gradient(#103e2c,#08271c);border:1px solid #ffffff2d;border-radius:18px;padding:16px;box-shadow:0 24px 70px #0008}.analysisHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.analysisHead h2{font-size:19px;margin:0}.analysisHead button{width:auto;padding:8px 12px}.analysisGrid{display:grid;grid-template-columns:minmax(250px,330px) 1fr;gap:14px;align-items:start}.analysisBoard{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;padding:6px;background:#0c6137;border-radius:12px}.analysisCell{position:relative;aspect-ratio:1;background:#1a8f53;border:1px solid #0004;border-radius:5px}.analysisCell .stone{inset:4px}.analysisCell.markPlayed{box-shadow:inset 0 0 0 4px #ff6b6b}.analysisCell.markBest{box-shadow:inset 0 0 0 4px #ffd43b}.analysisCell.markBoth{box-shadow:inset 0 0 0 4px #74c0fc}.analysisCell::after{position:absolute;right:3px;bottom:2px;font-size:9px;font-weight:900;color:#fff;text-shadow:0 1px 2px #000}.analysisCell.markPlayed::after{content:"実"}.analysisCell.markBest::after{content:"最"}.analysisCell.markBoth::after{content:"最=実"}.analysisDetails{display:grid;gap:9px}.analysisLine{background:#0002;border:1px solid #ffffff16;border-radius:11px;padding:9px 10px;line-height:1.55}.analysisLine b{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}.analysisLegend{font-size:11px;color:var(--muted);line-height:1.6}.analysisLegend span{display:inline-block;margin-right:10px}.dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:-1px}.dot.played{background:#ff6b6b}.dot.best{background:#ffd43b}.dot.both{background:#74c0fc}.replayPanel{display:none;background:#0002;border:1px solid #ffffff18;border-radius:12px;padding:10px;gap:8px}.replayPanel.show{display:grid}.replayInfo{text-align:center;font-weight:700}.replayControls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.replayActions{display:grid;grid-template-columns:120px 1fr 1fr;gap:6px}.replayPanel button,.replayPanel select{padding:9px;font-size:13px}button:disabled{opacity:.45;cursor:not-allowed}@media(max-width:850px){.layout{grid-template-columns:1fr}.topInfo{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.analysisGrid{grid-template-columns:1fr}.analysisBoard{width:min(100%,380px);margin:auto}}@media(max-width:520px){.wrap{padding:7px}h1{font-size:23px}.sub{font-size:11px;margin-bottom:8px}.panel{padding:9px;border-radius:13px}.layout,.game{gap:8px}.topInfo{grid-template-columns:repeat(2,1fr);gap:6px}.board{gap:2px;padding:5px;border-radius:11px}.cell{border-radius:6px}.stone{inset:4px}.cell.hint{outline-width:2px;outline-offset:-2px}.cell.last{box-shadow:inset 0 0 0 3px #ff8c00}.info b{font-size:17px}.analysisCard{grid-template-columns:auto 1fr}.analysisCard button{grid-column:1/-1;width:100%}.analysisScore{min-width:54px}.analysisModal{padding:8px}.analysisDialog{padding:12px}}
+:root{
+  --bg:#083b25;--panel:#ffffff16;--line:#ffffff25;--cell:#188b50;--board:#116d3e;
+  --txt:#fff;--muted:#d9eee2;--accent:#ffd166;--danger:#ef476f;--good:#8ce99a;--warn:#ffd43b;
+  --analysis:#071f16e8;
+}
+*{box-sizing:border-box}
+html,body,.wrap,button,select,.board,.cell{touch-action:manipulation}
+.wrap{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.cell{-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;min-height:100dvh;background:radial-gradient(circle at top,#126a3e,#062b1b);color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Meiryo",sans-serif
+}
+.wrap{width:min(1100px,100%);margin:auto;padding:16px}
+h1{text-align:center;margin:0 0 4px;font-size:28px}
+.sub{text-align:center;color:var(--muted);font-size:13px;margin:0 0 14px}
+.layout{display:grid;grid-template-columns:310px 1fr;gap:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;backdrop-filter:blur(5px);box-shadow:0 12px 26px #0003}
+.settings{display:grid;gap:10px}
+.label{font-size:12px;color:var(--muted);margin-bottom:4px}
+select,button{width:100%;border:0;border-radius:11px;padding:11px;font-size:15px;font-weight:700}
+select{background:#fff;color:#123}
+button{cursor:pointer}
+.primary{background:var(--accent);color:#222}
+.secondary{background:#eaf7ef;color:#173625}
+.danger{background:var(--danger);color:#fff}
+.controls{display:grid;gap:8px;margin-top:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.stat,.info{background:#0002;border:1px solid #ffffff18;border-radius:12px;padding:9px}
+.stat b,.info b{display:block;font-size:20px}
+.message{margin-top:12px;min-height:58px;padding:11px;background:#0002;border-radius:12px;line-height:1.5}
+.help{font-size:12px;line-height:1.6;color:var(--muted);margin-top:10px}
+.game{display:grid;gap:12px}
+.topInfo{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.boardWrap{display:flex;justify-content:center}
+.board{
+  width:min(100%,548px);display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;padding:9px;
+  background:linear-gradient(#178049,var(--board));border:1px solid var(--line);border-radius:16px
+}
+.cell{position:relative;aspect-ratio:1;width:100%;min-width:0;padding:0;border:1px solid #0003;border-radius:9px;background:linear-gradient(#1b9858,var(--cell));box-shadow:none}
+.cell.hint{outline:3px solid #fff;outline-offset:-3px}
+.cell.last{box-shadow:inset 0 0 0 4px #ff8c00}
+.stone{position:absolute;inset:7px;border-radius:50%;border:1px solid #0005;box-shadow:inset 0 4px 7px #fff4,0 3px 7px #0005}
+.black{background:radial-gradient(circle at 35% 30%,#666,#111 38%,#000)}
+.white{background:radial-gradient(circle at 35% 30%,#fff,#f5f5f5 48%,#d7d7d7)}
+.log{max-height:160px;overflow:auto;background:#0002;border-radius:12px;padding:10px;font:12px/1.5 ui-monospace,monospace;white-space:pre-wrap}
+
+.analysisCard{
+  display:none;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;
+  background:#001b12a8;border:1px solid #ffffff1f;border-radius:13px
+}
+.analysisCard.show{display:grid}
+.analysisScore{
+  min-width:58px;text-align:center;border-radius:12px;padding:7px 6px;background:#fff;color:#173625;
+  font-size:22px;font-weight:900;line-height:1
+}
+.analysisScore small{display:block;font-size:10px;font-weight:700;margin-top:4px;color:#456}
+.analysisText{min-width:0;line-height:1.4}
+.analysisText b{display:block;font-size:14px}
+.analysisText span{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.analysisText .goodShort{color:#c9f7d0}.analysisText .badShort{color:#ffe3a3}
+.analysisCard button{width:auto;min-width:82px;padding:9px 11px;font-size:13px}
+.analysisBusy{font-size:12px;color:var(--muted)}
+.analysisModal{
+  position:fixed;inset:0;display:none;z-index:50;background:#000a;
+  padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));
+  overflow:hidden;align-items:stretch;justify-content:center
+}
+.analysisModal.show{display:flex}
+.analysisDialog{
+  width:min(720px,100%);max-height:100%;margin:auto 0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  background:linear-gradient(#103e2c,#08271c);border:1px solid #ffffff2d;
+  border-radius:18px;padding:16px;box-shadow:0 24px 70px #0008
+}
+.analysisHead{
+  position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:0 -4px 12px;padding:4px 4px 10px;background:#103e2c;border-bottom:1px solid #ffffff18
+}
+html.analysisOpen,html.analysisOpen body{overflow:hidden}
+.analysisHead h2{font-size:19px;margin:0}
+.analysisHead button{width:auto;padding:8px 12px}
+.analysisGrid{display:grid;grid-template-columns:minmax(250px,330px) 1fr;gap:14px;align-items:start}
+.analysisBoard{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:2px;padding:6px;background:#0c6137;border-radius:12px
+}
+.analysisCell{position:relative;aspect-ratio:1;background:#1a8f53;border:1px solid #0004;border-radius:5px}
+.analysisCell .stone{inset:4px}
+.analysisCell.markPlayed{box-shadow:inset 0 0 0 4px #ff6b6b}
+.analysisCell.markBest{box-shadow:inset 0 0 0 4px #ffd43b}
+.analysisCell.markBoth{box-shadow:inset 0 0 0 4px #74c0fc}
+.analysisCell::after{position:absolute;right:3px;bottom:2px;font-size:9px;font-weight:900;color:#fff;text-shadow:0 1px 2px #000}
+.analysisCell.markPlayed::after{content:"実"}
+.analysisCell.markBest::after{content:"最"}
+.analysisCell.markBoth::after{content:"最=実"}
+.analysisDetails{display:grid;gap:9px}
+.analysisLine{background:#0002;border:1px solid #ffffff16;border-radius:11px;padding:9px 10px;line-height:1.55}
+.analysisLine b{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
+.analysisLegend{font-size:11px;color:var(--muted);line-height:1.6}
+.analysisLegend span{display:inline-block;margin-right:10px}
+.dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:-1px}
+.dot.played{background:#ff6b6b}.dot.best{background:#ffd43b}.dot.both{background:#74c0fc}.moveColor{display:inline-flex;align-items:center;font-weight:800}.playedMove{color:#ffc1c1}.bestMove{color:#ffe58a}.bothMove{color:#b9e2ff}
+
+.replayPanel{display:none;background:#0002;border:1px solid #ffffff18;border-radius:12px;padding:10px;gap:8px}
+.replayPanel.show{display:grid}
+.replayInfo{text-align:center;font-weight:700}
+.replayControls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.replayActions{display:grid;grid-template-columns:120px 1fr 1fr;gap:6px}
+.replayPanel button,.replayPanel select{padding:9px;font-size:13px}
+button:disabled{opacity:.45;cursor:not-allowed}
+
+@media(max-width:850px){
+  .layout{grid-template-columns:1fr}.topInfo{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:650px){
+  .analysisGrid{grid-template-columns:1fr}.analysisBoard{width:min(100%,380px);margin:auto}
+}
+@media(max-width:520px){
+  .wrap{padding:7px}h1{font-size:23px}.sub{font-size:11px;margin-bottom:8px}.panel{padding:9px;border-radius:13px}
+  .layout,.game{gap:8px}.topInfo{grid-template-columns:repeat(2,1fr);gap:6px}.board{gap:2px;padding:5px;border-radius:11px}
+  .cell{border-radius:6px}.stone{inset:4px}.cell.hint{outline-width:2px;outline-offset:-2px}.cell.last{box-shadow:inset 0 0 0 3px #ff8c00}
+  .info b{font-size:17px}.analysisCard{grid-template-columns:auto 1fr}.analysisCard button{grid-column:1/-1;width:100%}
+  .analysisScore{min-width:54px}.analysisModal{padding:max(6px,env(safe-area-inset-top)) 6px max(6px,env(safe-area-inset-bottom))}.analysisDialog{padding:12px}
+}
 </style>
 </head>
 <body>
-<main class="wrap"><h1>Simple Othello</h1><p class="sub">スマホ対応・1人/2人対戦</p><div class="layout"><section class="panel"><div class="settings"><div><div class="label">モード</div><select id="mode"><option value="cpu">一人で遊ぶ（vs CPU）</option><option value="two">二人で遊ぶ</option></select></div><div><div class="label">あなたの色</div><select id="color"><option value="1">黒</option><option value="-1">白</option></select></div><div><div class="label">CPUの強さ</div><select id="diff"><option value="easy">弱</option><option value="normal" selected>中</option><option value="hard">強</option><option value="expert">上級</option><option value="master">名人</option><option value="ultimate">最強</option><option value="oni">鬼</option></select></div><div><div class="label">一手評価</div><select id="analysisMode"><option value="on" selected>ON（鬼基準）</option><option value="off">OFF</option></select></div></div><div class="stats"><div class="stat"><span class="label">黒</span><b id="bc">2</b></div><div class="stat"><span class="label">白</span><b id="wc">2</b></div><div class="stat"><span class="label">状態</span><b id="status">-</b></div></div><div class="message" id="msg">設定を選んで「新しいゲーム」を押してください。</div><div class="controls"><button class="primary" id="new">新しいゲーム</button><button class="secondary" id="hint">ヒント表示: ON</button><button class="danger" id="pass">パス</button><button class="secondary" id="replay" disabled>リプレイを見る</button></div><div class="help">置ける場所は白枠、CPUの直前手はオレンジ枠です。最強・鬼は先読みするため、少し考えることがあります。CPU対戦では、あなたの一手をCPU難易度とは別に「鬼」基準で評価します。</div></section><section class="panel game" id="gamePanel"><div class="topInfo"><div class="info"><span class="label">現在の番</span><b id="turn">-</b></div><div class="info"><span class="label">モード</span><b id="modeText">vs CPU</b></div><div class="info"><span class="label">あなた</span><b id="you">黒</b></div><div class="info"><span class="label">強さ</span><b id="diffText">中</b></div><div class="info"><span class="label">置ける場所</span><b id="moves">0</b></div></div><div class="boardWrap"><div class="board" id="board"></div></div><div class="analysisCard" id="analysisCard" aria-live="polite"><div class="analysisScore" id="analysisScore">--<small>点</small></div><div class="analysisText"><b id="analysisTitle">一手を評価中…</b><span id="analysisGoodShort" class="analysisBusy">鬼目線で確認しています</span><span id="analysisBadShort"></span></div><button class="secondary" id="analysisOpen" disabled>詳しく見る</button></div><div class="replayPanel" id="replayPanel"><div class="replayInfo" id="replayInfo">開始位置</div><div class="replayControls"><button class="secondary" id="replayFirst">最初</button><button class="secondary" id="replayPrev">前へ</button><button class="primary" id="replayPlay">再生</button><button class="secondary" id="replayNext">次へ</button><button class="secondary" id="replayLast">最後</button></div><div class="replayActions"><select id="replaySpeed" aria-label="再生速度"><option value="1200">ゆっくり</option><option value="700" selected>標準</option><option value="350">速い</option></select><button class="secondary" id="shareReplay">リプレイを共有</button><button class="secondary" id="closeReplay">戻る</button></div></div><div class="log" id="log"></div></section></div></main>
-<div class="analysisModal" id="analysisModal" role="dialog" aria-modal="true" aria-labelledby="analysisHeading"><div class="analysisDialog"><div class="analysisHead"><h2 id="analysisHeading">鬼の一手評価</h2><button class="secondary" id="analysisClose">閉じる</button></div><div class="analysisGrid"><div><div class="analysisBoard" id="analysisBoard"></div><div class="analysisLegend"><span><i class="dot played"></i>実際の手</span><span><i class="dot best"></i>最善手</span><span><i class="dot both"></i>一致</span></div></div><div class="analysisDetails"><div class="analysisLine"><b>採点</b><span id="detailScore">-</span></div><div class="analysisLine"><b>実際の手 / 最善手</b><span id="detailMoves">-</span></div><div class="analysisLine"><b>良かった点</b><span id="detailGood">-</span></div><div class="analysisLine"><b>改善できる点</b><span id="detailBad">-</span></div><div class="analysisLine"><b>鬼ならこう考える</b><span id="detailWhy">-</span></div></div></div></div></div>
+<main class="wrap">
+  <h1>Simple Othello</h1>
+  <p class="sub">スマホ対応・1人/2人対戦</p>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="settings">
+        <div>
+          <div class="label">モード</div>
+          <select id="mode">
+            <option value="cpu">一人で遊ぶ（vs CPU）</option>
+            <option value="two">二人で遊ぶ</option>
+          </select>
+        </div>
+        <div>
+          <div class="label">あなたの色</div>
+          <select id="color">
+            <option value="1">黒</option>
+            <option value="-1">白</option>
+          </select>
+        </div>
+        <div>
+          <div class="label">CPUの強さ</div>
+          <select id="diff">
+            <option value="easy">弱</option>
+            <option value="normal" selected>中</option>
+            <option value="hard">強</option>
+            <option value="expert">上級</option>
+            <option value="master">名人</option>
+            <option value="ultimate">最強</option>
+            <option value="oni">鬼</option>
+          </select>
+        </div>
+        <div>
+          <div class="label">一手評価</div>
+          <select id="analysisMode">
+            <option value="on" selected>ON（鬼基準）</option>
+            <option value="off">OFF</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span class="label">黒</span><b id="bc">2</b></div>
+        <div class="stat"><span class="label">白</span><b id="wc">2</b></div>
+        <div class="stat"><span class="label">状態</span><b id="status">-</b></div>
+      </div>
+
+      <div class="message" id="msg">設定を選んで「新しいゲーム」を押してください。</div>
+
+      <div class="controls">
+        <button class="primary" id="new">新しいゲーム</button>
+        <button class="secondary" id="hint">ヒント表示: ON</button>
+        <button class="danger" id="pass">パス</button>
+        <button class="secondary" id="replay" disabled>リプレイを見る</button>
+      </div>
+
+      <div class="help">
+        置ける場所は白枠、CPUの直前手はオレンジ枠です。最強・鬼は先読みするため、少し考えることがあります。
+        CPU対戦では、あなたの一手をCPU難易度とは別に「鬼」基準で評価します。
+      </div>
+    </section>
+
+    <section class="panel game" id="gamePanel">
+      <div class="topInfo">
+        <div class="info"><span class="label">現在の番</span><b id="turn">-</b></div>
+        <div class="info"><span class="label">モード</span><b id="modeText">vs CPU</b></div>
+        <div class="info"><span class="label">あなた</span><b id="you">黒</b></div>
+        <div class="info"><span class="label">強さ</span><b id="diffText">中</b></div>
+        <div class="info"><span class="label">置ける場所</span><b id="moves">0</b></div>
+      </div>
+
+      <div class="boardWrap"><div class="board" id="board"></div></div>
+
+      <div class="analysisCard" id="analysisCard" aria-live="polite">
+        <div class="analysisScore" id="analysisScore">--<small>点</small></div>
+        <div class="analysisText">
+          <b id="analysisTitle">一手を評価中…</b>
+          <span id="analysisGoodShort" class="analysisBusy">鬼目線で確認しています</span>
+          <span id="analysisBadShort"></span>
+        </div>
+        <button class="secondary" id="analysisOpen" disabled>詳しく見る</button>
+      </div>
+
+      <div class="replayPanel" id="replayPanel">
+        <div class="replayInfo" id="replayInfo">開始位置</div>
+        <div class="replayControls">
+          <button class="secondary" id="replayFirst">最初</button>
+          <button class="secondary" id="replayPrev">前へ</button>
+          <button class="primary" id="replayPlay">再生</button>
+          <button class="secondary" id="replayNext">次へ</button>
+          <button class="secondary" id="replayLast">最後</button>
+        </div>
+        <div class="replayActions">
+          <select id="replaySpeed" aria-label="再生速度">
+            <option value="1200">ゆっくり</option>
+            <option value="700" selected>標準</option>
+            <option value="350">速い</option>
+          </select>
+          <button class="secondary" id="shareReplay">リプレイを共有</button>
+          <button class="secondary" id="closeReplay">戻る</button>
+        </div>
+      </div>
+
+      <div class="log" id="log"></div>
+    </section>
+  </div>
+</main>
+
+<div class="analysisModal" id="analysisModal" role="dialog" aria-modal="true" aria-labelledby="analysisHeading">
+  <div class="analysisDialog" id="analysisDialog">
+    <div class="analysisHead">
+      <h2 id="analysisHeading">鬼の一手評価</h2>
+      <button class="secondary" id="analysisClose">対局に戻る</button>
+    </div>
+    <div class="analysisGrid">
+      <div>
+        <div class="analysisBoard" id="analysisBoard"></div>
+        <div class="analysisLegend">
+          <span><i class="dot played"></i>実際の手</span>
+          <span><i class="dot best"></i>最善手</span>
+          <span><i class="dot both"></i>一致</span>
+        </div>
+      </div>
+      <div class="analysisDetails">
+        <div class="analysisLine"><b>採点</b><span id="detailScore">-</span></div>
+        <div class="analysisLine"><b>実際の手 / 最善手</b><span id="detailMoves">-</span></div>
+        <div class="analysisLine"><b>良かった点</b><span id="detailGood">-</span></div>
+        <div class="analysisLine"><b>改善できる点</b><span id="detailBad">-</span></div>
+        <div class="analysisLine"><b>鬼ならこう考える</b><span id="detailWhy">-</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const N=8,E=0,B=1,W=-1,D=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]],DL={easy:'弱',normal:'中',hard:'強',expert:'上級',master:'名人',ultimate:'最強',oni:'鬼'},FILES='ABCDEFGH';
-const $=id=>document.getElementById(id),el={board:$('board'),mode:$('mode'),color:$('color'),diff:$('diff'),bc:$('bc'),wc:$('wc'),status:$('status'),msg:$('msg'),turn:$('turn'),modeText:$('modeText'),you:$('you'),diffText:$('diffText'),moves:$('moves'),log:$('log'),hint:$('hint'),analysisMode:$('analysisMode'),analysisCard:$('analysisCard'),analysisScore:$('analysisScore'),analysisTitle:$('analysisTitle'),analysisGoodShort:$('analysisGoodShort'),analysisBadShort:$('analysisBadShort'),analysisOpen:$('analysisOpen')};
-let s={b:[],turn:B,player:B,cpu:W,on:false,mode:'cpu',diff:'normal',hints:true,last:null,logs:[],history:[],replay:null,analysis:null,analysisToken:0};
-const name=c=>c===B?'黒':'白',coord=(r,c)=>FILES[c]+(r+1),inside=(r,c)=>r>=0&&c>=0&&r<N&&c<N,cloneBoard=board=>board.map(row=>[...row]);
-function init(){s.b=Array.from({length:N},()=>Array(N).fill(E));s.b[3][3]=W;s.b[4][4]=W;s.b[3][4]=B;s.b[4][3]=B}
-function initialBoard(){let b=Array.from({length:N},()=>Array(N).fill(E));b[3][3]=W;b[4][4]=W;b[3][4]=B;b[4][3]=B;return b}
-function flips(board,r,c,col){if(!inside(r,c)||board[r][c]!==E)return[];let out=[];for(const[dr,dc]of D){let rr=r+dr,cc=c+dc,line=[];while(inside(rr,cc)&&board[rr][cc]===-col){line.push([rr,cc]);rr+=dr;cc+=dc}if(line.length&&inside(rr,cc)&&board[rr][cc]===col)out.push(...line)}return out}
-function legal(board,col){let a=[];for(let r=0;r<N;r++)for(let c=0;c<N;c++){let f=flips(board,r,c,col);if(f.length)a.push({r,c,f})}return a}
-function put(board,r,c,col){let f=flips(board,r,c,col);if(!f.length)return null;let n=cloneBoard(board);n[r][c]=col;for(const[rr,cc]of f)n[rr][cc]=col;return n}
-function count(){let b=0,w=0;for(const row of s.b)for(const v of row){if(v===B)b++;else if(v===W)w++}return{b,w}}
+const N=8,E=0,B=1,W=-1;
+const D=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+const DL={easy:'弱',normal:'中',hard:'強',expert:'上級',master:'名人',ultimate:'最強',oni:'鬼'};
+const FILES='ABCDEFGH';
+const $=id=>document.getElementById(id);
+
+const el={
+  board:$('board'),mode:$('mode'),color:$('color'),diff:$('diff'),bc:$('bc'),wc:$('wc'),status:$('status'),
+  msg:$('msg'),turn:$('turn'),modeText:$('modeText'),you:$('you'),diffText:$('diffText'),moves:$('moves'),
+  log:$('log'),hint:$('hint'),analysisMode:$('analysisMode'),analysisCard:$('analysisCard'),analysisScore:$('analysisScore'),
+  analysisTitle:$('analysisTitle'),analysisGoodShort:$('analysisGoodShort'),analysisBadShort:$('analysisBadShort'),analysisOpen:$('analysisOpen')
+};
+
+let s={
+  b:[],turn:B,player:B,cpu:W,on:false,mode:'cpu',diff:'normal',hints:true,last:null,logs:[],
+  history:[],replay:null,analysis:null,analysisToken:0
+};
+
+const name=c=>c===B?'黒':'白';
+const coord=(r,c)=>FILES[c]+(r+1);
+const inside=(r,c)=>r>=0&&c>=0&&r<N&&c<N;
+const cloneBoard=board=>board.map(row=>[...row]);
+
+function init(){
+  s.b=Array.from({length:N},()=>Array(N).fill(E));
+  s.b[3][3]=W;s.b[4][4]=W;s.b[3][4]=B;s.b[4][3]=B;
+}
+function initialBoard(){
+  let b=Array.from({length:N},()=>Array(N).fill(E));
+  b[3][3]=W;b[4][4]=W;b[3][4]=B;b[4][3]=B;
+  return b;
+}
+function flips(board,r,c,col){
+  if(!inside(r,c)||board[r][c]!==E)return[];
+  let out=[];
+  for(const[dr,dc]of D){
+    let rr=r+dr,cc=c+dc,line=[];
+    while(inside(rr,cc)&&board[rr][cc]===-col){line.push([rr,cc]);rr+=dr;cc+=dc}
+    if(line.length&&inside(rr,cc)&&board[rr][cc]===col)out.push(...line);
+  }
+  return out;
+}
+function legal(board,col){
+  let a=[];
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    let f=flips(board,r,c,col);
+    if(f.length)a.push({r,c,f});
+  }
+  return a;
+}
+function put(board,r,c,col){
+  let f=flips(board,r,c,col);
+  if(!f.length)return null;
+  let n=cloneBoard(board);
+  n[r][c]=col;
+  for(const[rr,cc]of f)n[rr][cc]=col;
+  return n;
+}
+function count(){
+  let b=0,w=0;
+  for(const row of s.b)for(const v of row){if(v===B)b++;else if(v===W)w++}
+  return{b,w};
+}
 function canHuman(){return s.on&&(s.mode==='two'||s.turn===s.player)}
 function addLog(t){s.logs.unshift(t);s.logs=s.logs.slice(0,60);el.log.textContent=s.logs.join('\n')}
 function recordMove(col,r=8,c=8,pass=false){s.history.push({col,r,c,pass})}
-function readSettings(){s.mode=el.mode.value;s.diff=el.diff.value;s.player=+el.color.value;s.cpu=-s.player;el.color.disabled=s.mode==='two';el.diff.disabled=s.mode==='two';el.analysisMode.disabled=s.mode==='two'}
-function render(over=false){readSettings();let{b,w}=count();el.bc.textContent=b;el.wc.textContent=w;el.turn.textContent=s.on?name(s.turn):'-';let lm=s.on?legal(s.b,s.turn):[];el.moves.textContent=lm.length;el.modeText.textContent=s.mode==='two'?'2人対戦':'vs CPU';el.you.textContent=s.mode==='two'?'黒 / 白':name(s.player);el.diffText.textContent=s.mode==='two'?'-':DL[s.diff];if(over)el.status.textContent=b===w?'引分':(b>w?'黒勝ち':'白勝ち');else el.status.textContent=!s.on?'-':(s.mode==='two'?name(s.turn)+'の番':s.turn===s.player?'あなた':'CPU');el.hint.textContent='ヒント表示: '+(s.hints?'ON':'OFF');el.board.innerHTML='';let set=new Set((s.hints&&s.on?lm:[]).map(m=>m.r+','+m.c));for(let r=0;r<N;r++)for(let c=0;c<N;c++){let q=document.createElement('button');q.className='cell';q.setAttribute('aria-label',coord(r,c));if(set.has(r+','+c))q.classList.add('hint');if(s.last&&s.last.r===r&&s.last.c===c)q.classList.add('last');let v=s.b[r]?.[c]||E;if(v){let st=document.createElement('span');st.className='stone '+(v===B?'black':'white');q.appendChild(st)}q.onclick=()=>move(r,c);el.board.appendChild(q)}}
-function hideAnalysis(){s.analysis=null;s.analysisToken++;el.analysisCard.classList.remove('show');$('analysisModal').classList.remove('show');el.analysisOpen.disabled=true}
-function showAnalysisBusy(){el.analysisCard.classList.add('show');el.analysisScore.innerHTML='--<small>点</small>';el.analysisTitle.textContent='一手を評価中…';el.analysisGoodShort.textContent='鬼目線で確認しています';el.analysisGoodShort.className='analysisBusy';el.analysisBadShort.textContent='';el.analysisBadShort.className='';el.analysisOpen.disabled=true}
-function newGame(){stopReplayTimer();s.replay=null;$('replayPanel').classList.remove('show');hideAnalysis();readSettings();init();s.turn=B;s.on=true;s.last=null;s.logs=[];s.history=[];$('replay').disabled=true;setTimeout(()=>{if(matchMedia('(max-width:850px)').matches)$('gamePanel').scrollIntoView({behavior:'smooth',block:'start'})},80);addLog('--- 新しいゲーム ---');if(s.mode==='two'){el.msg.textContent='黒の番です。';render()}else if(s.player===B){el.msg.textContent='あなたは黒です。あなたの番です。';render()}else{s.turn=s.cpu;el.msg.textContent='あなたは白です。CPUが先手です。';render();setTimeout(cpuTurn,350)}}
-function move(r,c){if(!canHuman())return;let f=flips(s.b,r,c,s.turn);if(!f.length)return;let who=s.mode==='two'?name(s.turn):'あなた',before=cloneBoard(s.b),movingCol=s.turn;recordMove(s.turn,r,c);s.b=put(s.b,r,c,s.turn);s.last=null;addLog(`${who}: ${coord(r,c)} / ${f.length}枚返し`);s.turn=-s.turn;render();if(s.mode==='two'){advanceTwo();return}if(el.analysisMode.value==='off'){s.turn=s.cpu;render();setTimeout(cpuTurn,220);return}showAnalysisBusy();const token=++s.analysisToken;setTimeout(()=>{if(token!==s.analysisToken||!s.on||s.mode!=='cpu')return;s.analysis=analyzeHumanMove(before,movingCol,r,c);updateAnalysisCard();if(token!==s.analysisToken||!s.on)return;s.turn=s.cpu;render();setTimeout(cpuTurn,220)},30)}
-function advanceTwo(){if(!legal(s.b,B).length&&!legal(s.b,W).length)return end();if(legal(s.b,s.turn).length){el.msg.textContent=name(s.turn)+'の番です。';render()}else{recordMove(s.turn,8,8,true);addLog(name(s.turn)+': パス');s.turn=-s.turn;advanceTwo()}}
-const corner=(r,c)=>(r===0||r===7)&&(c===0||c===7),edge=(r,c)=>r===0||r===7||c===0||c===7,xsq=(r,c)=>(r===1||r===6)&&(c===1||c===6),csq=(r,c)=>((r===0||r===7)&&(c===1||c===6))||((c===0||c===7)&&(r===1||r===6));
-const PW=[[120,-35,20,5,5,20,-35,120],[-35,-55,-5,-5,-5,-5,-55,-35],[20,-5,15,3,3,15,-5,20],[5,-5,3,3,3,3,-5,5],[5,-5,3,3,3,3,-5,5],[20,-5,15,3,3,15,-5,20],[-35,-55,-5,-5,-5,-5,-55,-35],[120,-35,20,5,5,20,-35,120]];
+function readSettings(){
+  s.mode=el.mode.value;s.diff=el.diff.value;s.player=+el.color.value;s.cpu=-s.player;
+  el.color.disabled=s.mode==='two';el.diff.disabled=s.mode==='two';el.analysisMode.disabled=s.mode==='two';
+}
+function render(over=false){
+  readSettings();
+  let{b,w}=count();
+  el.bc.textContent=b;el.wc.textContent=w;el.turn.textContent=s.on?name(s.turn):'-';
+  let lm=s.on?legal(s.b,s.turn):[];
+  el.moves.textContent=lm.length;
+  el.modeText.textContent=s.mode==='two'?'2人対戦':'vs CPU';
+  el.you.textContent=s.mode==='two'?'黒 / 白':name(s.player);
+  el.diffText.textContent=s.mode==='two'?'-':DL[s.diff];
+  if(over)el.status.textContent=b===w?'引分':(b>w?'黒勝ち':'白勝ち');
+  else el.status.textContent=!s.on?'-':(s.mode==='two'?name(s.turn)+'の番':s.turn===s.player?'あなた':'CPU');
+  el.hint.textContent='ヒント表示: '+(s.hints?'ON':'OFF');
+  el.board.innerHTML='';
+  let set=new Set((s.hints&&s.on?lm:[]).map(m=>m.r+','+m.c));
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    let q=document.createElement('button');
+    q.className='cell';
+    q.setAttribute('aria-label',coord(r,c));
+    if(set.has(r+','+c))q.classList.add('hint');
+    if(s.last&&s.last.r===r&&s.last.c===c)q.classList.add('last');
+    let v=s.b[r]?.[c]||E;
+    if(v){
+      let st=document.createElement('span');
+      st.className='stone '+(v===B?'black':'white');
+      q.appendChild(st);
+    }
+    q.onclick=()=>move(r,c);
+    el.board.appendChild(q);
+  }
+}
+function hideAnalysis(){
+  s.analysis=null;s.analysisToken++;
+  el.analysisCard.classList.remove('show');
+  $('analysisModal').classList.remove('show');
+  document.documentElement.classList.remove('analysisOpen');
+  el.analysisOpen.disabled=true;
+}
+function showAnalysisBusy(){
+  el.analysisCard.classList.add('show');
+  el.analysisScore.innerHTML='--<small>点</small>';
+  el.analysisTitle.textContent='一手を評価中…';
+  el.analysisGoodShort.textContent='鬼目線で確認しています';
+  el.analysisGoodShort.className='analysisBusy';
+  el.analysisBadShort.textContent='';
+  el.analysisBadShort.className='';
+  el.analysisOpen.disabled=true;
+}
+
+function newGame(){
+  stopReplayTimer();s.replay=null;$('replayPanel').classList.remove('show');hideAnalysis();
+  readSettings();init();s.turn=B;s.on=true;s.last=null;s.logs=[];s.history=[];$('replay').disabled=true;
+  setTimeout(()=>{if(matchMedia('(max-width:850px)').matches)$('gamePanel').scrollIntoView({behavior:'smooth',block:'start'})},80);
+  addLog('--- 新しいゲーム ---');
+  if(s.mode==='two'){el.msg.textContent='黒の番です。';render()}
+  else if(s.player===B){el.msg.textContent='あなたは黒です。あなたの番です。';render()}
+  else{s.turn=s.cpu;el.msg.textContent='あなたは白です。CPUが先手です。';render();setTimeout(cpuTurn,350)}
+}
+
+function move(r,c){
+  if(!canHuman())return;
+  let f=flips(s.b,r,c,s.turn);
+  if(!f.length)return;
+  let who=s.mode==='two'?name(s.turn):'あなた';
+  let before=cloneBoard(s.b),movingCol=s.turn;
+  recordMove(s.turn,r,c);
+  s.b=put(s.b,r,c,s.turn);
+  s.last=null;
+  addLog(`${who}: ${coord(r,c)} / ${f.length}枚返し`);
+  s.turn=-s.turn;
+  render();
+  if(s.mode==='two'){
+    advanceTwo();
+    return;
+  }
+  if(el.analysisMode.value==='off'){
+    s.turn=s.cpu;render();setTimeout(cpuTurn,220);
+    return;
+  }
+  showAnalysisBusy();
+  const token=++s.analysisToken;
+  setTimeout(()=>{
+    if(token!==s.analysisToken||!s.on||s.mode!=='cpu')return;
+    s.analysis=analyzeHumanMove(before,movingCol,r,c);
+    updateAnalysisCard();
+    if(token!==s.analysisToken||!s.on)return;
+    s.turn=s.cpu;render();setTimeout(cpuTurn,220);
+  },30);
+}
+
+function advanceTwo(){
+  if(!legal(s.b,B).length&&!legal(s.b,W).length)return end();
+  if(legal(s.b,s.turn).length){el.msg.textContent=name(s.turn)+'の番です。';render()}
+  else{recordMove(s.turn,8,8,true);addLog(name(s.turn)+': パス');s.turn=-s.turn;advanceTwo()}
+}
+
+const corner=(r,c)=>(r===0||r===7)&&(c===0||c===7);
+const edge=(r,c)=>r===0||r===7||c===0||c===7;
+const xsq=(r,c)=>(r===1||r===6)&&(c===1||c===6);
+const csq=(r,c)=>((r===0||r===7)&&(c===1||c===6))||((c===0||c===7)&&(r===1||r===6));
+
+const PW=[
+  [120,-35,20,5,5,20,-35,120],
+  [-35,-55,-5,-5,-5,-5,-55,-35],
+  [20,-5,15,3,3,15,-5,20],
+  [5,-5,3,3,3,3,-5,5],
+  [5,-5,3,3,3,3,-5,5],
+  [20,-5,15,3,3,15,-5,20],
+  [-35,-55,-5,-5,-5,-5,-55,-35],
+  [120,-35,20,5,5,20,-35,120]
+];
+
 let searchDeadline=0,searchTimedOut=false;
 function emptyCount(board){let n=0;for(const row of board)for(const v of row)if(v===E)n++;return n}
 function discDiff(board,col){let n=0;for(const row of board)for(const v of row)n+=v===col?1:v===-col?-1:0;return n}
 function terminalScore(board,col){let d=discDiff(board,col);return d===0?0:(d>0?100000:-100000)+d*100}
-function evaluate(board,col){let empties=emptyCount(board),mine=legal(board,col).length,theirs=legal(board,-col).length;if(!mine&&!theirs)return terminalScore(board,col);let pos=0,frontMine=0,frontTheirs=0,cMine=0,cTheirs=0;for(let r=0;r<N;r++)for(let c=0;c<N;c++){let v=board[r][c];if(!v)continue;pos+=(v===col?1:-1)*PW[r][c];if(corner(r,c)){if(v===col)cMine++;else cTheirs++}let frontier=false;for(const[dr,dc]of D)if(inside(r+dr,c+dc)&&board[r+dr][c+dc]===E){frontier=true;break}if(frontier){if(v===col)frontMine++;else frontTheirs++}}let d=discDiff(board,col),discWeight=empties<14?14:empties<28?3:-1;return pos*4+(mine-theirs)*16+(cMine-cTheirs)*180+(frontTheirs-frontMine)*7+d*discWeight}
-function orderedMoves(board,col){return legal(board,col).sort((a,b)=>(PW[b.r][b.c]+b.f.length*2)-(PW[a.r][a.c]+a.f.length*2))}
-function minimax(board,turn,depth,alpha,beta,root){if(performance.now()>searchDeadline){searchTimedOut=true;return evaluate(board,root)}let ms=orderedMoves(board,turn),other=legal(board,-turn);if(!ms.length&&!other.length)return terminalScore(board,root);if(depth<=0)return evaluate(board,root);if(!ms.length)return minimax(board,-turn,depth-1,alpha,beta,root);if(turn===root){let best=-Infinity;for(const m of ms){best=Math.max(best,minimax(put(board,m.r,m.c,turn),-turn,depth-1,alpha,beta,root));alpha=Math.max(alpha,best);if(beta<=alpha||searchTimedOut)break}return best}let best=Infinity;for(const m of ms){best=Math.min(best,minimax(put(board,m.r,m.c,turn),-turn,depth-1,alpha,beta,root));beta=Math.min(beta,best);if(beta<=alpha||searchTimedOut)break}return best}
-function searchPick(board,col,maxDepth,timeMs,exactAt){let ms=orderedMoves(board,col),best=ms[0],empties=emptyCount(board),target=empties<=exactAt?empties+2:maxDepth;searchDeadline=performance.now()+timeMs;for(let depth=1;depth<=target;depth++){searchTimedOut=false;let roundBest=best,roundScore=-Infinity;for(const m of ms){let score=minimax(put(board,m.r,m.c,col),-col,depth-1,-Infinity,Infinity,col);if(searchTimedOut)break;if(score>roundScore){roundScore=score;roundBest=m}}if(searchTimedOut)break;best=roundBest}return best}
-function analyzeMoves(board,col,maxDepth,timeMs,exactAt){let ms=orderedMoves(board,col),empties=emptyCount(board);if(!ms.length)return{ranked:[],depth:0};let target=empties<=exactAt?empties+2:maxDepth,last=ms.map(m=>({m,sc:quickScore(board,m,col,true)})),completedDepth=0;searchDeadline=performance.now()+timeMs;for(let depth=1;depth<=target;depth++){searchTimedOut=false;let round=[];for(const m of ms){let sc=minimax(put(board,m.r,m.c,col),-col,depth-1,-Infinity,Infinity,col);if(searchTimedOut)break;round.push({m,sc})}if(searchTimedOut||round.length!==ms.length)break;last=round;completedDepth=depth}last.sort((a,b)=>b.sc-a.sc);return{ranked:last,depth:completedDepth}}
-function quickScore(board,m,col,full){let n=put(board,m.r,m.c,col),sc=m.f.length*5+PW[m.r][m.c]*3;if(full)sc=evaluate(n,col);if(legal(n,-col).some(z=>corner(z.r,z.c)))sc-=2500;return sc}
-function chooseNearBest(ms,scored){let sorted=scored.slice().sort((a,b)=>b.sc-a.sc),pool=sorted.slice(0,Math.min(3,sorted.length));if(Math.random()<.7)return pool[0].m;return pool[Math.floor(Math.random()*pool.length)].m}
-function cpuPick(){let ms=legal(s.b,s.cpu);if(!ms.length)return null;if(s.diff==='easy'){let cs=ms.filter(m=>corner(m.r,m.c));if(cs.length&&Math.random()<.55)return cs[Math.floor(Math.random()*cs.length)];return ms[Math.floor(Math.random()*ms.length)]}if(s.diff==='normal')return chooseNearBest(ms,ms.map(m=>({m,sc:quickScore(s.b,m,s.cpu,false)})));if(s.diff==='hard')return ms.map(m=>({m,sc:quickScore(s.b,m,s.cpu,true)})).sort((a,b)=>b.sc-a.sc)[0].m;if(s.diff==='expert')return searchPick(s.b,s.cpu,2,180,6);if(s.diff==='master')return searchPick(s.b,s.cpu,3,320,8);if(s.diff==='ultimate')return searchPick(s.b,s.cpu,5,700,10);return searchPick(s.b,s.cpu,8,1400,14)}
-function gradeFromGap(gap,rank,total){if(total<=1)return 100;if(gap<=0)return 100;let score;if(gap<=25)score=97;else if(gap<=60)score=93;else if(gap<=120)score=88;else if(gap<=220)score=80;else if(gap<=380)score=70;else if(gap<=650)score=58;else if(gap<=1000)score=45;else if(gap<=1800)score=30;else score=15;score-=Math.min(10,Math.max(0,rank-2)*2);return Math.max(5,Math.min(100,score))}
-function gradeLabel(score){if(score===100)return'最善手';if(score>=93)return'ほぼ最善';if(score>=85)return'とても良い手';if(score>=75)return'良い手';if(score>=60)return'まずまず';if(score>=40)return'改善の余地あり';return'かなり危険'}
-function moveTraits(board,col,m){let after=put(board,m.r,m.c,col),opp=legal(after,-col),mineNext=legal(after,col);return{corner:corner(m.r,m.c),edge:edge(m.r,m.c),x:xsq(m.r,m.c),c:csq(m.r,m.c),oppMobility:opp.length,myMobility:mineNext.length,allowsCorner:opp.some(z=>corner(z.r,z.c)),flips:m.f.length}}
-function explainMove(board,col,played,best,score,rank,total){let p=moveTraits(board,col,played),b=moveTraits(board,col,best),good=[],bad=[];if(p.corner)good.push('角を確保できています');else if(p.edge&&!p.c)good.push('辺を使って形を安定させています');if(!p.allowsCorner)good.push('次に相手へ角を渡していません');if(p.oppMobility<=Math.max(2,b.oppMobility+1))good.push('相手の選択肢を比較的抑えています');if(score>=85&&!good.length)good.push('大きな形崩れを起こさない堅実な手です');if(!good.length)good.push('合法手として局面を前に進めています');if(p.allowsCorner)bad.push('次の手で相手に角を取られる可能性があります');if(p.x&&!p.corner)bad.push('角の斜め隣（X打ち）は角を渡しやすい危険地点です');if(p.c&&!p.corner)bad.push('角の横（C打ち）は角周りを不安定にしやすい地点です');if(!p.corner&&b.corner)bad.push(`最善手の${coord(best.r,best.c)}なら角を確保できました`);if(p.oppMobility>=b.oppMobility+3)bad.push(`相手の候補を${p.oppMobility}手残しており、最善手より自由を与えています`);if(rank>1&&!bad.length)bad.push(`候補${total}手中${rank}位。${coord(best.r,best.c)}の方が鬼評価では上です`);if(rank===1&&!bad.length)bad.push('大きな改善点はありません');let why;if(rank===1)why=`${coord(played.r,played.c)}は鬼の最善手と一致しています。`;else{let reasons=[];if(b.corner)reasons.push('角を確保できる');if(!b.allowsCorner&&p.allowsCorner)reasons.push('相手へ角を渡しにくい');if(b.oppMobility<p.oppMobility)reasons.push(`相手の候補を${b.oppMobility}手まで絞れる`);if(b.edge&&!b.c)reasons.push('安定しやすい辺を使える');if(!reasons.length)reasons.push('数手先の形・可動性・位置価値の総合評価が高い');why=`鬼なら${coord(best.r,best.c)}を選びます。${reasons.join('、')}ためです。`}return{good:good.slice(0,2).join('。')+'。',bad:bad.slice(0,2).join('。')+'。',why}}
-function analyzeHumanMove(board,col,r,c){let analysis=analyzeMoves(board,col,8,1400,14),ranked=analysis.ranked,playedEntry=ranked.find(x=>x.m.r===r&&x.m.c===c);if(!playedEntry){let m={r,c,f:flips(board,r,c,col)};playedEntry={m,sc:quickScore(board,m,col,true)};ranked.push(playedEntry);ranked.sort((a,b)=>b.sc-a.sc)}let best=ranked[0],rank=ranked.findIndex(x=>x.m.r===r&&x.m.c===c)+1,gap=Math.max(0,best.sc-playedEntry.sc),score=gradeFromGap(gap,rank,ranked.length),exp=explainMove(board,col,playedEntry.m,best.m,score,rank,ranked.length);return{board:cloneBoard(board),col,played:playedEntry.m,best:best.m,score,rank,total:ranked.length,depth:analysis.depth,gap,label:gradeLabel(score),good:exp.good,bad:exp.bad,why:exp.why}}
-function updateAnalysisCard(){let a=s.analysis;if(!a)return;el.analysisCard.classList.add('show');el.analysisScore.innerHTML=`${a.score}<small>点</small>`;el.analysisTitle.textContent=a.rank===1?`${a.label}｜${coord(a.played.r,a.played.c)}`:`${a.label}｜最善 ${coord(a.best.r,a.best.c)}`;el.analysisGoodShort.textContent='良い点：'+a.good;el.analysisGoodShort.className='goodShort';el.analysisBadShort.textContent='改善点：'+a.bad;el.analysisBadShort.className='badShort';el.analysisOpen.disabled=false}
-function drawAnalysisBoard(a){let root=$('analysisBoard');root.innerHTML='';for(let r=0;r<N;r++)for(let c=0;c<N;c++){let q=document.createElement('div');q.className='analysisCell';let played=a.played.r===r&&a.played.c===c,best=a.best.r===r&&a.best.c===c;if(played&&best)q.classList.add('markBoth');else if(played)q.classList.add('markPlayed');else if(best)q.classList.add('markBest');let v=a.board[r][c];if(v){let st=document.createElement('span');st.className='stone '+(v===B?'black':'white');q.appendChild(st)}root.appendChild(q)}}
-function openAnalysis(){let a=s.analysis;if(!a)return;drawAnalysisBoard(a);$('detailScore').textContent=`${a.score}点（${a.label} / 候補${a.total}手中${a.rank}位）`;$('detailMoves').textContent=`実際：${coord(a.played.r,a.played.c)} / 最善：${coord(a.best.r,a.best.c)}`;$('detailGood').textContent=a.good;$('detailBad').textContent=a.bad;$('detailWhy').textContent=a.why+(a.depth?` 解析深度：${a.depth}`:'');$('analysisModal').classList.add('show')}
-function closeAnalysis(){$('analysisModal').classList.remove('show')}
-function cpuTurn(){if(!s.on||s.mode!=='cpu')return;if(!legal(s.b,B).length&&!legal(s.b,W).length)return end();let ms=legal(s.b,s.cpu);if(!ms.length){recordMove(s.cpu,8,8,true);s.turn=s.player;el.msg.textContent='CPUはパス。あなたの番です。';return render()}let m=cpuPick();recordMove(s.cpu,m.r,m.c);s.b=put(s.b,m.r,m.c,s.cpu);s.last={r:m.r,c:m.c};addLog(`CPU: ${coord(m.r,m.c)} / ${m.f.length}枚返し`);s.turn=s.player;render();if(legal(s.b,s.player).length){el.msg.textContent='あなたの番です。';return}recordMove(s.player,8,8,true);addLog('あなた: パス');s.turn=s.cpu;el.msg.textContent='あなたは置ける場所がないためパス。';render();setTimeout(cpuTurn,250)}
-function end(){s.on=false;s.analysisToken++;let{b,w}=count(),t=b===w?'引き分け':b>w?'黒の勝ち':'白の勝ち';el.msg.textContent=`終了：${t}（黒 ${b} / 白 ${w}）`;addLog('--- '+t+' ---');$('replay').disabled=!s.history.length;render(true)}
-function pass(){if(!s.on)return;if(legal(s.b,s.turn).length){el.msg.textContent='まだ置ける場所があります。';return}if(s.mode==='two'){recordMove(s.turn,8,8,true);addLog(name(s.turn)+': パス');s.turn=-s.turn;advanceTwo()}else if(s.turn===s.player){hideAnalysis();recordMove(s.player,8,8,true);addLog('あなた: パス');s.turn=s.cpu;render();setTimeout(cpuTurn,200)}}
+function evaluate(board,col){
+  let empties=emptyCount(board),mine=legal(board,col).length,theirs=legal(board,-col).length;
+  if(!mine&&!theirs)return terminalScore(board,col);
+  let pos=0,frontMine=0,frontTheirs=0,cMine=0,cTheirs=0;
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    let v=board[r][c];if(!v)continue;
+    pos+=(v===col?1:-1)*PW[r][c];
+    if(corner(r,c)){if(v===col)cMine++;else cTheirs++}
+    let frontier=false;
+    for(const[dr,dc]of D)if(inside(r+dr,c+dc)&&board[r+dr][c+dc]===E){frontier=true;break}
+    if(frontier){if(v===col)frontMine++;else frontTheirs++}
+  }
+  let d=discDiff(board,col),discWeight=empties<14?14:empties<28?3:-1;
+  return pos*4+(mine-theirs)*16+(cMine-cTheirs)*180+(frontTheirs-frontMine)*7+d*discWeight;
+}
+function orderedMoves(board,col){
+  return legal(board,col).sort((a,b)=>(PW[b.r][b.c]+b.f.length*2)-(PW[a.r][a.c]+a.f.length*2));
+}
+function minimax(board,turn,depth,alpha,beta,root){
+  if(performance.now()>searchDeadline){searchTimedOut=true;return evaluate(board,root)}
+  let ms=orderedMoves(board,turn),other=legal(board,-turn);
+  if(!ms.length&&!other.length)return terminalScore(board,root);
+  if(depth<=0)return evaluate(board,root);
+  if(!ms.length)return minimax(board,-turn,depth-1,alpha,beta,root);
+  if(turn===root){
+    let best=-Infinity;
+    for(const m of ms){
+      best=Math.max(best,minimax(put(board,m.r,m.c,turn),-turn,depth-1,alpha,beta,root));
+      alpha=Math.max(alpha,best);
+      if(beta<=alpha||searchTimedOut)break;
+    }
+    return best;
+  }
+  let best=Infinity;
+  for(const m of ms){
+    best=Math.min(best,minimax(put(board,m.r,m.c,turn),-turn,depth-1,alpha,beta,root));
+    beta=Math.min(beta,best);
+    if(beta<=alpha||searchTimedOut)break;
+  }
+  return best;
+}
+function searchPick(board,col,maxDepth,timeMs,exactAt){
+  let ms=orderedMoves(board,col),best=ms[0],empties=emptyCount(board);
+  let target=empties<=exactAt?empties+2:maxDepth;
+  searchDeadline=performance.now()+timeMs;
+  for(let depth=1;depth<=target;depth++){
+    searchTimedOut=false;let roundBest=best,roundScore=-Infinity;
+    for(const m of ms){
+      let score=minimax(put(board,m.r,m.c,col),-col,depth-1,-Infinity,Infinity,col);
+      if(searchTimedOut)break;
+      if(score>roundScore){roundScore=score;roundBest=m}
+    }
+    if(searchTimedOut)break;
+    best=roundBest;
+  }
+  return best;
+}
+function analyzeMoves(board,col,maxDepth,timeMs,exactAt){
+  let ms=orderedMoves(board,col),empties=emptyCount(board);
+  if(!ms.length)return{ranked:[],depth:0};
+  let target=empties<=exactAt?empties+2:maxDepth;
+  let last=ms.map(m=>({m,sc:quickScore(board,m,col,true)})),completedDepth=0;
+  searchDeadline=performance.now()+timeMs;
+  for(let depth=1;depth<=target;depth++){
+    searchTimedOut=false;let round=[];
+    for(const m of ms){
+      let sc=minimax(put(board,m.r,m.c,col),-col,depth-1,-Infinity,Infinity,col);
+      if(searchTimedOut)break;
+      round.push({m,sc});
+    }
+    if(searchTimedOut||round.length!==ms.length)break;
+    last=round;completedDepth=depth;
+  }
+  last.sort((a,b)=>b.sc-a.sc);
+  return{ranked:last,depth:completedDepth};
+}
+function quickScore(board,m,col,full){
+  let n=put(board,m.r,m.c,col),sc=m.f.length*5+PW[m.r][m.c]*3;
+  if(full)sc=evaluate(n,col);
+  if(legal(n,-col).some(z=>corner(z.r,z.c)))sc-=2500;
+  return sc;
+}
+function chooseNearBest(ms,scored){
+  let sorted=scored.slice().sort((a,b)=>b.sc-a.sc),pool=sorted.slice(0,Math.min(3,sorted.length));
+  if(Math.random()<.7)return pool[0].m;
+  return pool[Math.floor(Math.random()*pool.length)].m;
+}
+function cpuPick(){
+  let ms=legal(s.b,s.cpu);if(!ms.length)return null;
+  if(s.diff==='easy'){
+    let cs=ms.filter(m=>corner(m.r,m.c));
+    if(cs.length&&Math.random()<.55)return cs[Math.floor(Math.random()*cs.length)];
+    return ms[Math.floor(Math.random()*ms.length)];
+  }
+  if(s.diff==='normal')return chooseNearBest(ms,ms.map(m=>({m,sc:quickScore(s.b,m,s.cpu,false)})));
+  if(s.diff==='hard')return ms.map(m=>({m,sc:quickScore(s.b,m,s.cpu,true)})).sort((a,b)=>b.sc-a.sc)[0].m;
+  if(s.diff==='expert')return searchPick(s.b,s.cpu,2,180,6);
+  if(s.diff==='master')return searchPick(s.b,s.cpu,3,320,8);
+  if(s.diff==='ultimate')return searchPick(s.b,s.cpu,5,700,10);
+  return searchPick(s.b,s.cpu,8,1400,14);
+}
+
+function gradeFromGap(gap,rank,total){
+  if(total<=1)return 100;
+  if(gap<=0)return 100;
+  let score;
+  if(gap<=25)score=97;
+  else if(gap<=60)score=93;
+  else if(gap<=120)score=88;
+  else if(gap<=220)score=80;
+  else if(gap<=380)score=70;
+  else if(gap<=650)score=58;
+  else if(gap<=1000)score=45;
+  else if(gap<=1800)score=30;
+  else score=15;
+  score-=Math.min(10,Math.max(0,rank-2)*2);
+  return Math.max(5,Math.min(100,score));
+}
+function gradeLabel(score){
+  if(score===100)return'最善手';
+  if(score>=93)return'ほぼ最善';
+  if(score>=85)return'とても良い手';
+  if(score>=75)return'良い手';
+  if(score>=60)return'まずまず';
+  if(score>=40)return'改善の余地あり';
+  return'かなり危険';
+}
+function moveTraits(board,col,m){
+  let after=put(board,m.r,m.c,col);
+  let opp=legal(after,-col),mineNext=legal(after,col);
+  return{
+    corner:corner(m.r,m.c),edge:edge(m.r,m.c),x:xsq(m.r,m.c),c:csq(m.r,m.c),
+    oppMobility:opp.length,myMobility:mineNext.length,allowsCorner:opp.some(z=>corner(z.r,z.c)),
+    flips:m.f.length
+  };
+}
+function explainMove(board,col,played,best,score,rank,total){
+  let p=moveTraits(board,col,played),b=moveTraits(board,col,best);
+  let good=[],bad=[];
+  if(p.corner)good.push('角を確保できています');
+  else if(p.edge&&!p.c)good.push('辺を使って形を安定させています');
+  if(!p.allowsCorner)good.push('次に相手へ角を渡していません');
+  if(p.oppMobility<=Math.max(2,b.oppMobility+1))good.push('相手の選択肢を比較的抑えています');
+  if(score>=85&&!good.length)good.push('大きな形崩れを起こさない堅実な手です');
+  if(!good.length)good.push('合法手として局面を前に進めています');
+
+  if(p.allowsCorner)bad.push('次の手で相手に角を取られる可能性があります');
+  if(p.x&&!p.corner)bad.push('角の斜め隣（X打ち）は角を渡しやすい危険地点です');
+  if(p.c&&!p.corner)bad.push('角の横（C打ち）は角周りを不安定にしやすい地点です');
+  if(!p.corner&&b.corner)bad.push('黄枠の最善手なら角を確保できました');
+  if(p.oppMobility>=b.oppMobility+3)bad.push(`相手の候補を${p.oppMobility}手残しており、最善手より自由を与えています`);
+  if(rank>1&&!bad.length)bad.push(`候補${total}手中${rank}位。黄枠の最善手の方が鬼評価では上です`);
+  if(rank===1&&!bad.length)bad.push('大きな改善点はありません');
+
+  let why;
+  if(rank===1)why='水色枠の手は鬼の最善手と一致しています。';
+  else{
+    let reasons=[];
+    if(b.corner)reasons.push('角を確保できる');
+    if(!b.allowsCorner&&p.allowsCorner)reasons.push('相手へ角を渡しにくい');
+    if(b.oppMobility<p.oppMobility)reasons.push(`相手の候補を${b.oppMobility}手まで絞れる`);
+    if(b.edge&&!b.c)reasons.push('安定しやすい辺を使える');
+    if(!reasons.length)reasons.push('数手先の形・可動性・位置価値の総合評価が高い');
+    why=`鬼なら黄枠の最善手を選びます。${reasons.join('、')}ためです。`;
+  }
+  return{good:good.slice(0,2).join('。')+'。',bad:bad.slice(0,2).join('。')+'。',why};
+}
+function analyzeHumanMove(board,col,r,c){
+  let analysis=analyzeMoves(board,col,8,1400,14);
+  let ranked=analysis.ranked;
+  let playedEntry=ranked.find(x=>x.m.r===r&&x.m.c===c);
+  if(!playedEntry){
+    let m={r,c,f:flips(board,r,c,col)};
+    playedEntry={m,sc:quickScore(board,m,col,true)};
+    ranked.push(playedEntry);ranked.sort((a,b)=>b.sc-a.sc);
+  }
+  let best=ranked[0],rank=ranked.findIndex(x=>x.m.r===r&&x.m.c===c)+1;
+  let gap=Math.max(0,best.sc-playedEntry.sc),score=gradeFromGap(gap,rank,ranked.length);
+  let exp=explainMove(board,col,playedEntry.m,best.m,score,rank,ranked.length);
+  return{
+    board:cloneBoard(board),col,played:playedEntry.m,best:best.m,score,rank,total:ranked.length,
+    depth:analysis.depth,gap,label:gradeLabel(score),good:exp.good,bad:exp.bad,why:exp.why
+  };
+}
+function updateAnalysisCard(){
+  let a=s.analysis;if(!a)return;
+  el.analysisCard.classList.add('show');
+  el.analysisScore.innerHTML=`${a.score}<small>点</small>`;
+  el.analysisTitle.textContent=a.rank===1?`${a.label}｜水色枠＝実際の手・最善手`:`${a.label}｜赤枠＝実際の手 / 黄枠＝最善手`;
+  el.analysisGoodShort.textContent='良い点：'+a.good;
+  el.analysisGoodShort.className='goodShort';
+  el.analysisBadShort.textContent='改善点：'+a.bad;
+  el.analysisBadShort.className='badShort';
+  el.analysisOpen.disabled=false;
+}
+function drawAnalysisBoard(a){
+  let root=$('analysisBoard');root.innerHTML='';
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    let q=document.createElement('div');q.className='analysisCell';
+    let played=a.played.r===r&&a.played.c===c,best=a.best.r===r&&a.best.c===c;
+    if(played&&best)q.classList.add('markBoth');
+    else if(played)q.classList.add('markPlayed');
+    else if(best)q.classList.add('markBest');
+    let v=a.board[r][c];
+    if(v){
+      let st=document.createElement('span');
+      st.className='stone '+(v===B?'black':'white');q.appendChild(st);
+    }
+    root.appendChild(q);
+  }
+}
+function openAnalysis(){
+  let a=s.analysis;if(!a)return;
+  drawAnalysisBoard(a);
+  $('detailScore').textContent=`${a.score}点（${a.label} / 候補${a.total}手中${a.rank}位）`;
+  $('detailMoves').innerHTML=a.rank===1
+    ?'<span class="moveColor bothMove"><i class="dot both"></i>水色枠：実際の手＝最善手</span>'
+    :'<span class="moveColor playedMove"><i class="dot played"></i>赤枠：実際の手</span>　<span class="moveColor bestMove"><i class="dot best"></i>黄枠：最善手</span>';
+  $('detailGood').textContent=a.good;
+  $('detailBad').textContent=a.bad;
+  $('detailWhy').textContent=a.why+(a.depth?` 解析深度：${a.depth}`:'');
+  $('analysisModal').classList.add('show');
+  document.documentElement.classList.add('analysisOpen');
+  let dialog=$('analysisDialog');if(dialog)dialog.scrollTop=0;
+}
+function closeAnalysis(){
+  $('analysisModal').classList.remove('show');
+  document.documentElement.classList.remove('analysisOpen');
+}
+
+function cpuTurn(){
+  if(!s.on||s.mode!=='cpu')return;
+  if(!legal(s.b,B).length&&!legal(s.b,W).length)return end();
+  let ms=legal(s.b,s.cpu);
+  if(!ms.length){
+    recordMove(s.cpu,8,8,true);s.turn=s.player;el.msg.textContent='CPUはパス。あなたの番です。';return render();
+  }
+  let m=cpuPick();
+  recordMove(s.cpu,m.r,m.c);
+  s.b=put(s.b,m.r,m.c,s.cpu);s.last={r:m.r,c:m.c};
+  addLog(`CPU: ${coord(m.r,m.c)} / ${m.f.length}枚返し`);
+  s.turn=s.player;render();
+  if(legal(s.b,s.player).length){el.msg.textContent='あなたの番です。';return}
+  recordMove(s.player,8,8,true);addLog('あなた: パス');s.turn=s.cpu;
+  el.msg.textContent='あなたは置ける場所がないためパス。';render();setTimeout(cpuTurn,250);
+}
+function end(){
+  s.on=false;s.analysisToken++;
+  let{b,w}=count(),t=b===w?'引き分け':b>w?'黒の勝ち':'白の勝ち';
+  el.msg.textContent=`終了：${t}（黒 ${b} / 白 ${w}）`;addLog('--- '+t+' ---');
+  $('replay').disabled=!s.history.length;render(true);
+}
+function pass(){
+  if(!s.on)return;
+  if(legal(s.b,s.turn).length){el.msg.textContent='まだ置ける場所があります。';return}
+  if(s.mode==='two'){
+    recordMove(s.turn,8,8,true);addLog(name(s.turn)+': パス');s.turn=-s.turn;advanceTwo();
+  }else if(s.turn===s.player){
+    hideAnalysis();recordMove(s.player,8,8,true);addLog('あなた: パス');s.turn=s.cpu;render();setTimeout(cpuTurn,200);
+  }
+}
+
 function replayPayload(){return{v:1,d:s.diff,m:s.mode,p:s.player,h:s.history.map(x=>[x.col,x.pass?8:x.r,x.pass?8:x.c])}}
-function encodePayload(data){let bytes=new TextEncoder().encode(JSON.stringify(data)),bin='';for(const b of bytes)bin+=String.fromCharCode(b);return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
-function decodePayload(text){let b64=text.replace(/-/g,'+').replace(/_/g,'/');while(b64.length%4)b64+='=';let bin=atob(b64),bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));return JSON.parse(new TextDecoder().decode(bytes))}
-function stopReplayTimer(){if(s.replay&&s.replay.timer){clearTimeout(s.replay.timer);s.replay.timer=null}$('replayPlay').textContent='再生'}
-function replayBoardAt(index){let b=initialBoard();for(let i=0;i<index;i++){let x=s.replay.history[i];if(!x.pass){let next=put(b,x.r,x.c,x.col);if(next)b=next}}return b}
-function drawReplay(){if(!s.replay)return;s.b=replayBoardAt(s.replay.index);s.on=false;s.last=null;render();let i=s.replay.index,total=s.replay.history.length,last=i?s.replay.history[i-1]:null;el.status.textContent='リプレイ';el.turn.textContent=last?name(-last.col):'黒';el.moves.textContent='-';el.modeText.textContent='リプレイ';el.you.textContent=s.replay.meta.m==='two'?'黒 / 白':name(s.replay.meta.p);el.diffText.textContent=s.replay.meta.m==='two'?'-':(DL[s.replay.meta.d]||'-');$('replayInfo').textContent=i===0?'開始位置（0 / '+total+'）':(last.pass?name(last.col)+'：パス':name(last.col)+'：'+coord(last.r,last.c))+'（'+i+' / '+total+'）';$('replayFirst').disabled=$('replayPrev').disabled=i===0;$('replayLast').disabled=$('replayNext').disabled=i>=total}
-function goReplay(index){if(!s.replay)return;stopReplayTimer();s.replay.index=Math.max(0,Math.min(index,s.replay.history.length));drawReplay()}
-function playReplay(){if(!s.replay)return;if(s.replay.timer){stopReplayTimer();return}if(s.replay.index>=s.replay.history.length)s.replay.index=0;$('replayPlay').textContent='停止';const tick=()=>{if(!s.replay)return;if(s.replay.index>=s.replay.history.length){stopReplayTimer();return}s.replay.index++;drawReplay();s.replay.timer=setTimeout(tick,+$('replaySpeed').value)};s.replay.timer=setTimeout(tick,200)}
-function startReplay(data,fromLink=false){if(!data||data.v!==1||!Array.isArray(data.h)||data.h.length>120)throw new Error('invalid replay');hideAnalysis();stopReplayTimer();let history=data.h.map(x=>({col:+x[0],r:+x[1],c:+x[2],pass:+x[1]===8}));if(history.some(x=>![B,W].includes(x.col)||(!x.pass&&!inside(x.r,x.c))))throw new Error('invalid moves');s.replay={history,index:0,timer:null,meta:{d:data.d||'normal',m:data.m||'cpu',p:+data.p||B},fromLink,saved:fromLink?null:{b:cloneBoard(s.b),history:s.history.slice(),logs:s.logs.slice()}};$('replayPanel').classList.add('show');$('replay').disabled=false;el.msg.textContent=fromLink?'共有されたリプレイです。':'対局を最初から再生できます。';drawReplay()}
-function closeReplay(){if(!s.replay)return;stopReplayTimer();let saved=s.replay.saved;s.replay=null;$('replayPanel').classList.remove('show');if(saved){s.b=saved.b;s.history=saved.history;s.logs=saved.logs;el.log.textContent=s.logs.join('\n');el.msg.textContent='リプレイを終了しました。';render(true)}else{init();s.history=[];s.logs=[];$('replay').disabled=true;el.log.textContent='';el.msg.textContent='設定を選んで「新しいゲーム」を押してください。';render()}history.replaceState(null,'',location.pathname+location.search)}
-async function shareReplay(){if(!s.replay)return;let data={v:1,d:s.replay.meta.d,m:s.replay.meta.m,p:s.replay.meta.p,h:s.replay.history.map(x=>[x.col,x.pass?8:x.r,x.pass?8:x.c])},url=location.origin+location.pathname+'#replay='+encodePayload(data);try{if(navigator.share)await navigator.share({title:'Simple Othello リプレイ',text:'この対局のリプレイです。',url});else{await navigator.clipboard.writeText(url);el.msg.textContent='リプレイURLをコピーしました。'}}catch(e){if(e.name!=='AbortError'){try{await navigator.clipboard.writeText(url);el.msg.textContent='リプレイURLをコピーしました。'}catch{prompt('このURLをコピーしてください',url)}}}}
-function loadReplayFromHash(){let m=location.hash.match(/^#replay=(.+)$/);if(!m)return;try{startReplay(decodePayload(m[1]),true)}catch{el.msg.textContent='リプレイデータを読み込めませんでした。'}}
-document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});document.addEventListener('contextmenu',e=>{if(e.target.closest('.board'))e.preventDefault()});$('new').onclick=newGame;el.hint.onclick=()=>{s.hints=!s.hints;render()};$('pass').onclick=pass;$('replay').onclick=()=>startReplay(replayPayload());$('replayFirst').onclick=()=>goReplay(0);$('replayPrev').onclick=()=>goReplay(s.replay.index-1);$('replayPlay').onclick=playReplay;$('replayNext').onclick=()=>goReplay(s.replay.index+1);$('replayLast').onclick=()=>goReplay(s.replay.history.length);$('shareReplay').onclick=shareReplay;$('closeReplay').onclick=closeReplay;el.analysisOpen.onclick=openAnalysis;$('analysisClose').onclick=closeAnalysis;$('analysisModal').onclick=e=>{if(e.target===$('analysisModal'))closeAnalysis()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAnalysis()});el.mode.onchange=()=>{readSettings();hideAnalysis();render()};el.color.onchange=()=>{hideAnalysis();render()};el.diff.onchange=render;el.analysisMode.onchange=()=>{if(el.analysisMode.value==='off')hideAnalysis()};init();render();loadReplayFromHash();
+function encodePayload(data){
+  let bytes=new TextEncoder().encode(JSON.stringify(data)),bin='';
+  for(const b of bytes)bin+=String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function decodePayload(text){
+  let b64=text.replace(/-/g,'+').replace(/_/g,'/');
+  while(b64.length%4)b64+='=';
+  let bin=atob(b64),bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+function stopReplayTimer(){
+  if(s.replay&&s.replay.timer){clearTimeout(s.replay.timer);s.replay.timer=null}
+  $('replayPlay').textContent='再生';
+}
+function replayBoardAt(index){
+  let b=initialBoard();
+  for(let i=0;i<index;i++){
+    let x=s.replay.history[i];
+    if(!x.pass){let next=put(b,x.r,x.c,x.col);if(next)b=next}
+  }
+  return b;
+}
+function drawReplay(){
+  if(!s.replay)return;
+  s.b=replayBoardAt(s.replay.index);s.on=false;s.last=null;render();
+  let i=s.replay.index,total=s.replay.history.length,last=i?s.replay.history[i-1]:null;
+  el.status.textContent='リプレイ';el.turn.textContent=last?name(-last.col):'黒';el.moves.textContent='-';
+  el.modeText.textContent='リプレイ';el.you.textContent=s.replay.meta.m==='two'?'黒 / 白':name(s.replay.meta.p);
+  el.diffText.textContent=s.replay.meta.m==='two'?'-':(DL[s.replay.meta.d]||'-');
+  $('replayInfo').textContent=i===0?'開始位置（0 / '+total+'）':
+    (last.pass?name(last.col)+'：パス':name(last.col)+'：'+coord(last.r,last.c))+'（'+i+' / '+total+'）';
+  $('replayFirst').disabled=$('replayPrev').disabled=i===0;
+  $('replayLast').disabled=$('replayNext').disabled=i>=total;
+}
+function goReplay(index){
+  if(!s.replay)return;stopReplayTimer();s.replay.index=Math.max(0,Math.min(index,s.replay.history.length));drawReplay();
+}
+function playReplay(){
+  if(!s.replay)return;
+  if(s.replay.timer){stopReplayTimer();return}
+  if(s.replay.index>=s.replay.history.length)s.replay.index=0;
+  $('replayPlay').textContent='停止';
+  const tick=()=>{
+    if(!s.replay)return;
+    if(s.replay.index>=s.replay.history.length){stopReplayTimer();return}
+    s.replay.index++;drawReplay();s.replay.timer=setTimeout(tick,+$('replaySpeed').value);
+  };
+  s.replay.timer=setTimeout(tick,200);
+}
+function startReplay(data,fromLink=false){
+  if(!data||data.v!==1||!Array.isArray(data.h)||data.h.length>120)throw new Error('invalid replay');
+  hideAnalysis();stopReplayTimer();
+  let history=data.h.map(x=>({col:+x[0],r:+x[1],c:+x[2],pass:+x[1]===8}));
+  if(history.some(x=>![B,W].includes(x.col)||(!x.pass&&!inside(x.r,x.c))))throw new Error('invalid moves');
+  s.replay={
+    history,index:0,timer:null,meta:{d:data.d||'normal',m:data.m||'cpu',p:+data.p||B},
+    fromLink,saved:fromLink?null:{b:cloneBoard(s.b),history:s.history.slice(),logs:s.logs.slice()}
+  };
+  $('replayPanel').classList.add('show');$('replay').disabled=false;
+  el.msg.textContent=fromLink?'共有されたリプレイです。':'対局を最初から再生できます。';drawReplay();
+}
+function closeReplay(){
+  if(!s.replay)return;
+  stopReplayTimer();let saved=s.replay.saved;s.replay=null;$('replayPanel').classList.remove('show');
+  if(saved){
+    s.b=saved.b;s.history=saved.history;s.logs=saved.logs;el.log.textContent=s.logs.join('\n');
+    el.msg.textContent='リプレイを終了しました。';render(true);
+  }else{
+    init();s.history=[];s.logs=[];$('replay').disabled=true;el.log.textContent='';
+    el.msg.textContent='設定を選んで「新しいゲーム」を押してください。';render();
+  }
+  history.replaceState(null,'',location.pathname+location.search);
+}
+async function shareReplay(){
+  if(!s.replay)return;
+  let data={v:1,d:s.replay.meta.d,m:s.replay.meta.m,p:s.replay.meta.p,h:s.replay.history.map(x=>[x.col,x.pass?8:x.r,x.pass?8:x.c])};
+  let url=location.origin+location.pathname+'#replay='+encodePayload(data);
+  try{
+    if(navigator.share)await navigator.share({title:'Simple Othello リプレイ',text:'この対局のリプレイです。',url});
+    else{await navigator.clipboard.writeText(url);el.msg.textContent='リプレイURLをコピーしました。'}
+  }catch(e){
+    if(e.name!=='AbortError'){
+      try{await navigator.clipboard.writeText(url);el.msg.textContent='リプレイURLをコピーしました。'}
+      catch{prompt('このURLをコピーしてください',url)}
+    }
+  }
+}
+function loadReplayFromHash(){
+  let m=location.hash.match(/^#replay=(.+)$/);if(!m)return;
+  try{startReplay(decodePayload(m[1]),true)}
+  catch{el.msg.textContent='リプレイデータを読み込めませんでした。'}
+}
+
+document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
+document.addEventListener('contextmenu',e=>{if(e.target.closest('.board'))e.preventDefault()});
+$('new').onclick=newGame;
+el.hint.onclick=()=>{s.hints=!s.hints;render()};
+$('pass').onclick=pass;
+$('replay').onclick=()=>startReplay(replayPayload());
+$('replayFirst').onclick=()=>goReplay(0);
+$('replayPrev').onclick=()=>goReplay(s.replay.index-1);
+$('replayPlay').onclick=playReplay;
+$('replayNext').onclick=()=>goReplay(s.replay.index+1);
+$('replayLast').onclick=()=>goReplay(s.replay.history.length);
+$('shareReplay').onclick=shareReplay;
+$('closeReplay').onclick=closeReplay;
+el.analysisOpen.onclick=openAnalysis;
+$('analysisClose').onclick=closeAnalysis;
+$('analysisModal').onclick=e=>{if(e.target===$('analysisModal'))closeAnalysis()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAnalysis()});
+el.mode.onchange=()=>{readSettings();hideAnalysis();render()};
+el.color.onchange=()=>{hideAnalysis();render()};
+el.diff.onchange=render;
+el.analysisMode.onchange=()=>{if(el.analysisMode.value==='off')hideAnalysis()};
+
+init();render();loadReplayFromHash();
 </script>
 </body>
 </html>
